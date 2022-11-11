@@ -25,6 +25,8 @@ private:
     variant_t currentDate();
 
     std::shared_ptr<variant_t> sample_property;
+
+    variant_t startTimer();
 };
 
 #endif //SAMPLEADDIN_H

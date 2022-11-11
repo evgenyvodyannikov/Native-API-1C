@@ -8,9 +8,10 @@
 #include "SampleAddIn.h"
 
 std::string SampleAddIn::extensionName() {
-    return "Sample";
+    return "Timer";
 }
 
+// наследует сам себя???
 SampleAddIn::SampleAddIn() {
     // Universal property. Could store any supported by native api type.
     sample_property = std::make_shared<variant_t>();
@@ -29,6 +30,7 @@ SampleAddIn::SampleAddIn() {
     AddMethod(L"CurrentDate", L"ТекущаяДата", this, &SampleAddIn::currentDate);
     AddMethod(L"Assign", L"Присвоить", this, &SampleAddIn::assign);
     AddMethod(L"SamplePropertyValue", L"ЗначениеСвойстваОбразца", this, &SampleAddIn::samplePropertyValue);
+    AddMethod(L"StartTimer", L"ЗапуститьТаймер", this, &SampleAddIn::startTimer);
 
     // Method registration with default arguments
     //
@@ -104,3 +106,11 @@ variant_t SampleAddIn::currentDate() {
 #endif
     return current;
 }
+
+variant_t SampleAddIn::startTimer()
+{
+    using namespace std;
+
+    return true;
+}
+
