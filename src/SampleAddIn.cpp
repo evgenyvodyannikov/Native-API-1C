@@ -4,7 +4,9 @@
 #include <stdexcept>
 #include <string>
 #include <thread>
+#include <iostream>
 
+#include "timer.h"
 #include "SampleAddIn.h"
 
 std::string SampleAddIn::extensionName() {
@@ -110,7 +112,13 @@ variant_t SampleAddIn::currentDate() {
 variant_t SampleAddIn::startTimer()
 {
     using namespace std;
-
-    return true;
+    try {
+        Timer timer;
+        timer.add(std::chrono::milliseconds(1000), [] {}, false);
+        return true;
+    }
+    catch(...) {
+        return false;
+    }
 }
 
