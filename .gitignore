@@ -8,4 +8,5 @@
 *.VC.VC.opendb
 
 /out/
+/.vs/
 .vs/

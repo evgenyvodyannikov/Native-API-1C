@@ -25,7 +25,7 @@ if (ANDROID)
 endif ()
 
 add_library(${TARGET} SHARED
-        ${SOURCES})
+        ${SOURCES} "src/Timer.h" "src/Timer.cpp")
 
 target_compile_definitions(${TARGET} PRIVATE
         UNICODE

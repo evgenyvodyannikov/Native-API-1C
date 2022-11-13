@@ -9,6 +9,8 @@
 #include "timer.h"
 #include "SampleAddIn.h"
 
+
+// возврат название компоненты
 std::string SampleAddIn::extensionName() {
     return "Timer";
 }
@@ -16,16 +18,18 @@ std::string SampleAddIn::extensionName() {
 // наследует сам себя???
 SampleAddIn::SampleAddIn() {
     // Universal property. Could store any supported by native api type.
+    // +свойство запущен ли таймер?
     sample_property = std::make_shared<variant_t>();
     AddProperty(L"SampleProperty", L"ОбразецСвойства", sample_property);
 
     // Full featured property registration example
+    // возврат версии компоненты
     AddProperty(L"Version", L"ВерсияКомпоненты", [&]() {
         auto s = std::string(Version);
         return std::make_shared<variant_t>(std::move(s));
     });
 
-    // Method registration.
+    // Регистрация методов
     // Lambdas as method handlers are not supported.
     AddMethod(L"Add", L"Сложить", this, &SampleAddIn::add);
     AddMethod(L"Message", L"Сообщить", this, &SampleAddIn::message);
@@ -33,6 +37,9 @@ SampleAddIn::SampleAddIn() {
     AddMethod(L"Assign", L"Присвоить", this, &SampleAddIn::assign);
     AddMethod(L"SamplePropertyValue", L"ЗначениеСвойстваОбразца", this, &SampleAddIn::samplePropertyValue);
     AddMethod(L"StartTimer", L"ЗапуститьТаймер", this, &SampleAddIn::startTimer);
+    AddMethod(L"FixEvent", L"ЗафиксироватьСобытие", this, &SampleAddIn::fixEvent);
+    AddMethod(L"GetResult", L"ПолучитьРезультат", this, &SampleAddIn::getResult);
+    AddMethod(L"StopTimer", L"ОстановитьТаймер", this, &SampleAddIn::stopTimer);
 
     // Method registration with default arguments
     //
@@ -46,8 +53,7 @@ SampleAddIn::SampleAddIn() {
 
 }
 
-// Sample of addition method. Support both integer and string params.
-// Every exceptions derived from std::exceptions are handled by components API
+// Пример сложения int, string
 variant_t SampleAddIn::add(const variant_t &a, const variant_t &b) {
     if (std::holds_alternative<int32_t>(a) && std::holds_alternative<int32_t>(b)) {
         return std::get<int32_t>(a) + std::get<int32_t>(b);
@@ -97,6 +103,7 @@ variant_t SampleAddIn::samplePropertyValue() {
     return *sample_property;
 }
 
+// возврат тек. даты
 variant_t SampleAddIn::currentDate() {
     using namespace std;
     tm current{};
@@ -109,16 +116,65 @@ variant_t SampleAddIn::currentDate() {
     return current;
 }
 
+// обьявление переменных
+std::int32_t value = 0;
+std::string result;
+Timer timer;
+
+
+void IncrementSeconds()
+{
+    value++;
+}
+
+// Запуск таймера
 variant_t SampleAddIn::startTimer()
 {
     using namespace std;
     try {
-        Timer timer;
-        timer.add(std::chrono::milliseconds(1000), [] {}, false);
+        timer.add(std::chrono::milliseconds(1000), IncrementSeconds, false);
+        timer.isEnabled = true;
         return true;
     }
     catch(...) {
         return false;
+    }
+}
+
+// Остановка таймера - фикция
+variant_t SampleAddIn::stopTimer()
+{
+    using namespace std;
+    try {
+        timer.isEnabled = false;
+        return true;
+    }
+    catch (...) {
+        return false;
+    }
+}
+
+variant_t SampleAddIn::fixEvent()
+{
+
+    try {
+        result += value;
+        return true;
+    }
+    catch (...) {
+        return false;
+    }
+}
+
+variant_t SampleAddIn::getResult()
+{
+    if (timer.isEnabled)
+    {
+        return false;
+    }
+    else
+    {
+        return std::int32_t{ (value) };
     }
 }
 

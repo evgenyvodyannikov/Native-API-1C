@@ -12,6 +12,8 @@ public:
 private:
     std::string extensionName() override;
 
+    variant_t getResult();
+
     variant_t add(const variant_t &a, const variant_t &b);
 
     void message(const variant_t &msg);
@@ -27,6 +29,10 @@ private:
     std::shared_ptr<variant_t> sample_property;
 
     variant_t startTimer();
+
+    variant_t stopTimer();
+
+    variant_t fixEvent();
 };
 
 #endif //SAMPLEADDIN_H
