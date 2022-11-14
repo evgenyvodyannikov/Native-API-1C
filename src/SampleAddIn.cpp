@@ -40,6 +40,7 @@ SampleAddIn::SampleAddIn() {
     AddMethod(L"FixEvent", L"ЗафиксироватьСобытие", this, &SampleAddIn::fixEvent);
     AddMethod(L"GetResult", L"ПолучитьРезультат", this, &SampleAddIn::getResult);
     AddMethod(L"StopTimer", L"ОстановитьТаймер", this, &SampleAddIn::stopTimer);
+    AddMethod(L"GetValue", L"ПолучитьВремя", this, &SampleAddIn::getValue);
 
     // Method registration with default arguments
     //
@@ -117,14 +118,18 @@ variant_t SampleAddIn::currentDate() {
 }
 
 // обьявление переменных
-std::int32_t value = 0;
+std::double_t value = 0;
 std::string result;
 Timer timer;
 
 
 void IncrementSeconds()
 {
-    value++;
+    if (timer.isEnabled)
+    {
+        value += 0.1;
+        timer.add(std::chrono::milliseconds(100), IncrementSeconds, true);
+    }
 }
 
 // Запуск таймера
@@ -132,7 +137,7 @@ variant_t SampleAddIn::startTimer()
 {
     using namespace std;
     try {
-        timer.add(std::chrono::milliseconds(1000), IncrementSeconds, false);
+        timer.add(std::chrono::milliseconds(100), IncrementSeconds, true);
         timer.isEnabled = true;
         return true;
     }
@@ -141,15 +146,28 @@ variant_t SampleAddIn::startTimer()
     }
 }
 
+variant_t SampleAddIn::getValue()
+{
+    using namespace std;
+    try {
+        return std::int32_t{ (value) };
+    }
+    catch (...) {
+        return false;
+    }
+}
+
 // Остановка таймера - фикция
 variant_t SampleAddIn::stopTimer()
 {
     using namespace std;
-    try {
+    if(timer.isEnabled)
+    {
         timer.isEnabled = false;
         return true;
     }
-    catch (...) {
+    else 
+    {
         return false;
     }
 }
@@ -157,11 +175,13 @@ variant_t SampleAddIn::stopTimer()
 variant_t SampleAddIn::fixEvent()
 {
 
-    try {
+    if(timer.isEnabled)
+    {
         result += value;
         return true;
     }
-    catch (...) {
+    else
+    {
         return false;
     }
 }
@@ -174,7 +194,7 @@ variant_t SampleAddIn::getResult()
     }
     else
     {
-        return std::int32_t{ (value) };
+        return std::int32_t { (value) };
     }
 }
 
