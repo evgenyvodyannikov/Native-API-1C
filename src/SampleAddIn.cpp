@@ -5,6 +5,7 @@
 #include <string>
 #include <thread>
 #include <iostream>
+#include <list>
 
 #include "timer.h"
 #include "SampleAddIn.h"
@@ -40,7 +41,6 @@ SampleAddIn::SampleAddIn() {
     AddMethod(L"FixEvent", L"ЗафиксироватьСобытие", this, &SampleAddIn::fixEvent);
     AddMethod(L"GetResult", L"ПолучитьРезультат", this, &SampleAddIn::getResult);
     AddMethod(L"StopTimer", L"ОстановитьТаймер", this, &SampleAddIn::stopTimer);
-    AddMethod(L"GetValue", L"ПолучитьВремя", this, &SampleAddIn::getValue);
 
     // Method registration with default arguments
     //
@@ -120,6 +120,7 @@ variant_t SampleAddIn::currentDate() {
 // обьявление переменных
 std::double_t value = 0;
 std::string result;
+std::list<std::double_t> res;
 Timer timer;
 
 
@@ -146,17 +147,6 @@ variant_t SampleAddIn::startTimer()
     }
 }
 
-variant_t SampleAddIn::getValue()
-{
-    using namespace std;
-    try {
-        return std::int32_t{ (value) };
-    }
-    catch (...) {
-        return false;
-    }
-}
-
 // Остановка таймера - фикция
 variant_t SampleAddIn::stopTimer()
 {
@@ -168,6 +158,7 @@ variant_t SampleAddIn::stopTimer()
     }
     else 
     {
+        
         return false;
     }
 }
@@ -177,7 +168,8 @@ variant_t SampleAddIn::fixEvent()
 
     if(timer.isEnabled)
     {
-        result += value;
+        //result += value;
+        res.push_back(value);
         return true;
     }
     else
@@ -194,7 +186,18 @@ variant_t SampleAddIn::getResult()
     }
     else
     {
-        return std::int32_t { (value) };
+        
+        std:INT16 counter = 0;
+        
+        for(auto obj : res)
+        {
+            counter++;
+            std::string resItem = std::to_string(obj);
+            std::string counterStr = std::to_string(counter);
+            result += "Результат " + counterStr + ": " + resItem + "\n";
+        }
+
+        return result;//std::int32_t { (value) };
     }
 }
 

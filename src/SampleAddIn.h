@@ -34,8 +34,6 @@ private:
 
     variant_t fixEvent();
 
-    variant_t getValue();
-
 };
 
 #endif //SAMPLEADDIN_H
