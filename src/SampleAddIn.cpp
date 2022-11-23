@@ -196,7 +196,6 @@ variant_t SampleAddIn::getResult()
             std::string counterStr = std::to_string(counter);
             result += "Результат " + counterStr + ": " + resItem + "\n";
         }
-
         return result;//std::int32_t { (value) };
     }
 }

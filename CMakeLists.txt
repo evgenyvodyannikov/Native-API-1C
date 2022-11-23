@@ -16,7 +16,9 @@ list(APPEND SOURCES
         src/Component.cpp
         src/Component.h
         src/SampleAddIn.cpp
-        src/SampleAddIn.h)
+        src/SampleAddIn.h
+        src/Timer.cpp
+        src/Timer.h)
 
 if (ANDROID)
     list(APPEND SOURCES
